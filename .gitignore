@@ -1,4 +1,11 @@
+# Ignore any dataset
 /test*/
-/train/
+/train*/
 
+# Ignore Jupyter notebook checkpoints
 .ipynb_checkpoints/
+
+# Ignore temp files
+*~
+.*.un~
+
