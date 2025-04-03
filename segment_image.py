@@ -15,7 +15,6 @@ from collections import defaultdict
 train_dir = 'train'
 train_letter_dir = 'train_letter'
 angles = [-30, -20, -10, 10, 20, 30]
-filename_count = defaultdict(int)
 
 
 def delta_e(rgb1, rgb2):
@@ -278,6 +277,7 @@ def save_image_from_array(img_array, save_path):
     
     
 def generate_char_dataset(resize_to=None, color=False, split_using_color=False):
+    filename_count = defaultdict(int)
     count = 0
     miscount = 0
     total = len(os.listdir(train_dir))
