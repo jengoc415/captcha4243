@@ -148,11 +148,11 @@ def separate_overlapping_characters(img, max_color_diff):
     return character_images
 
 
-def get_letters(binary, color_img, color, min_area, min_fill_ratio, max_color_diff):
-    binary_flipped = cv2.bitwise_not(binary)
+def get_letters(binary, binary_blur, color_img, color, split_using_color, min_area, min_fill_ratio, max_color_diff):
+    binary_blur_flipped = cv2.bitwise_not(binary_blur)
 
     # Step 4: Find contours (external only)
-    contours, _ = cv2.findContours(binary_flipped, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours, _ = cv2.findContours(binary_blur_flipped, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     # Step 5: Extract and filter bounding boxes
     boxes = []
@@ -168,7 +168,7 @@ def get_letters(binary, color_img, color, min_area, min_fill_ratio, max_color_di
     # Step 7: Crop characters
     letters = []
     for (x, y, w, h) in boxes:
-        if color:
+        if split_using_color:
             char_img = color_img[y:y+h, x:x+w]
             separated = separate_overlapping_characters(char_img, max_color_diff)
             
@@ -190,18 +190,21 @@ def get_letters(binary, color_img, color, min_area, min_fill_ratio, max_color_di
                 
                 if area >= min_area and fill_ratio >= min_fill_ratio:
                     x, y, w, h = cv2.boundingRect(cv2.findNonZero(cv2.bitwise_not(binary)))
-                    # letters.append(binary[y:y+h, x:x+w])
-                    letters.append(separated_img[y:y+h, x:x+w])
+                    if color:
+                        letters.append(separated_img[y:y+h, x:x+w])
+                    else:
+                        letters.append(binary[y:y+h, x:x+w])
             
         else:
-            # char_img = binary[y:y+h, x:x+w]
-            char_img = color_img[y:y+h, x:x+w]
-            letters.append(char_img)
+            if color:
+                letters.append(color_img[y:y+h, x:x+w])
+            else:
+                letters.append(binary[y:y+h, x:x+w])
 
     return letters
 
 
-def preprocess_image(img, resize_to=None, color=False, min_area=50, min_fill_ratio=0, max_color_diff=50):
+def preprocess_image(img, resize_to=None, color=False, split_using_color=False, min_area=50, min_fill_ratio=0, max_color_diff=50):
     color_cleaned = img.copy()
     black = np.array([0, 0, 0])
 
@@ -221,9 +224,9 @@ def preprocess_image(img, resize_to=None, color=False, min_area=50, min_fill_rat
         C=3
     )
     
-    binary = cv2.GaussianBlur(binary, (3, 3), sigmaX=0)
+    binary_blur = cv2.GaussianBlur(binary, (3, 3), sigmaX=0)
     
-    letters = get_letters(binary, color_cleaned, color=color, min_area=min_area, min_fill_ratio=min_fill_ratio, max_color_diff=max_color_diff)
+    letters = get_letters(binary, binary_blur, color_cleaned, color=color, split_using_color=split_using_color, min_area=min_area, min_fill_ratio=min_fill_ratio, max_color_diff=max_color_diff)
     
     
     if resize_to:
@@ -274,7 +277,7 @@ def save_image_from_array(img_array, save_path):
     img.save(save_path)
     
     
-def generate_char_dataset():
+def generate_char_dataset(resize_to=None, color=False, split_using_color=False):
     count = 0
     miscount = 0
     total = len(os.listdir(train_dir))
@@ -286,7 +289,7 @@ def generate_char_dataset():
                 continue
 
             label = filename.split('-')[0]
-            chars = preprocess_image(img, resize_to=None, color=False)
+            chars = preprocess_image(img, color=color, split_using_color=split_using_color)
 
 
             if len(label) != len(chars):
@@ -298,13 +301,24 @@ def generate_char_dataset():
                 char = chars[i]
                 new_name = 'img-' + str(filename_count[letter]) + '.png'
                 filename_count[letter] += 1
-                save_image_from_array(char, os.path.join(train_letter_dir, letter, new_name))
+                
+                if resize_to:
+                    resized_char = cv2.resize(char, resize_to)
+                    save_image_from_array(resized_char, os.path.join(train_letter_dir, letter, new_name))
+                else:
+                    save_image_from_array(char, os.path.join(train_letter_dir, letter, new_name))
+                    
                 random_numbers = random.sample(range(len(angles)), 3)              
                 for no in random_numbers:
                     new_char = rotate_image(char, angles[no])
                     new_name ='img-' + str(filename_count[letter]) + '.png'
                     filename_count[letter] += 1
-                    save_image_from_array(new_char, os.path.join(train_letter_dir, letter, new_name))
+                    
+                    if resize_to:
+                        resized_new_char = cv2.resize(new_char, resize_to)
+                        save_image_from_array(resized_new_char, os.path.join(train_letter_dir, letter, new_name))
+                    else:
+                        save_image_from_array(new_char, os.path.join(train_letter_dir, letter, new_name))
 
         count += 1
         if count % 500 == 0:
@@ -314,4 +328,7 @@ def generate_char_dataset():
 
     
 if __name__ == "__main__":
-    generate_char_dataset()
+    # resize_to: output char images will all be this size
+    # color: False to get black and white char images, True to get original color char images
+    # split_using_color: True if we want to make use of color to separate overlapping characters
+    generate_char_dataset(resize_to=(28, 28), color=False, split_using_color=True)
