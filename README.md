@@ -6,6 +6,7 @@ This project builds a character-level CAPTCHA recognition system using a CNN tra
 
 ## Project Structure
 
+```text
 captcha_project/
 ├── dataset/
 │   ├── train/                  # Original full CAPTCHA images
@@ -28,7 +29,7 @@ captcha_project/
 ├── config.py                   # Centralized config for paths, hyperparams, etc.
 ├── requirements.txt            # Python dependencies
 └── README.md                   # Project overview + instructions
-
+```
 
 ## 🧪 Requirements
 
@@ -40,15 +41,17 @@ captcha_project/
 - `numpy`
 
 ## Install with:
+
 pip install -r requirements.txt
 
-
 ## Step 1: Preprocess CAPTCHA Images
+
 Run the following script to generate labeled character images from your original CAPTCHA dataset.
 
 python data_generation/generate_dataset.py
 
 This will:
+
 - Preprocess each CAPTCHA image (grayscale, denoise, remove scratch lines)
 - Segment into individual characters
 - Save them into dataset/train_letter/{label}/img-XXX.png
@@ -59,11 +62,13 @@ You can visualize samples with:
 python data_generation/visualize.py
 
 ## Step 2: Train the CNN
+
 Start training with:
 
 python train.py
 
 Training uses:
+
 - CNN defined in models/cnn.py
 - Dataset loaded via utils/loader.py
 - Configurable settings in config.py
@@ -75,13 +80,14 @@ Epoch [1/10], Loss: 2.34, Accuracy: 36.5%
 Epoch [10/10], Loss: 1.24, Accuracy: 74.3%
 
 ## Step 3: Configuration (via config.py)
+
 You can tune:
 
 CONFIG = {
-    "model": "cnn",
-    "batch_size": 64,
-    "epochs": 25,
-    "learning_rate": 0.001,
-    "image_size": (28, 28),
-    "data_path": "dataset/train_letter"
+"model": "cnn",
+"batch_size": 64,
+"epochs": 25,
+"learning_rate": 0.001,
+"image_size": (28, 28),
+"data_path": "dataset/train_letter"
 }
