@@ -23,9 +23,9 @@ captcha_project/
 │   ├── transforms.py           # Torchvision transforms (normalize, resize, augment)
 │   └── loader.py               # Custom Dataset class + PyTorch DataLoader
 │
-├── visualize.py                # Visualize preprocessed characters
+├── visualise.py                # Visualise preprocessed characters
 ├── train.py                    # Training loop for CNN model
-├── config.py                   # Centralized config for paths, hyperparams, etc.
+├── config.py                   # Centralised config for paths, hyperparams, etc.
 ├── requirements.txt            # Python dependencies
 └── README.md                   # Project overview + instructions
 
@@ -44,7 +44,7 @@ pip install -r requirements.txt
 
 
 ## Step 1: Preprocess CAPTCHA Images
-Run the following script to generate labeled character images from your original CAPTCHA dataset.
+Run the following script to generate labeled character images from our original CAPTCHA dataset.
 
 python data_generation/generate_dataset.py
 
@@ -53,10 +53,6 @@ This will:
 - Segment into individual characters
 - Save them into dataset/train_letter/{label}/img-XXX.png
 - Augment each character with slight rotations
-
-You can visualize samples with:
-
-python data_generation/visualize.py
 
 ## Step 2: Train the CNN
 Start training with:

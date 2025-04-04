@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from utils.loader import get_loaders
 
-def visualize_batch():
+def visualise_batch():
     loader, _, classes = get_loaders(batch_size=8)
     images, labels = next(iter(loader))
 
@@ -14,4 +14,4 @@ def visualize_batch():
     plt.show()
 
 if __name__ == "__main__":
-    visualize_batch()
+    visualise_batch()
