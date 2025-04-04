@@ -29,6 +29,8 @@ Thumbs.db
 *.bak
 *.tmp
 *.log
+*~
+.*.un~
 
 # Data files
 *.csv
