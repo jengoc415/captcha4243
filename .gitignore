@@ -1,11 +1,66 @@
-# Ignore any dataset
-/test*/
-/train*/
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+*.pyo
 
-# Ignore Jupyter notebook checkpoints
+# Jupyter Notebook Checkpoints
 .ipynb_checkpoints/
 
-# Ignore temp files
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Virtual environments
+.venv/
+env/
+venv/
+ENV/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Backup files
+*~
+*.swp
+*.swo
+*.bak
+*.tmp
+*.log
+
+# Data files
+*.csv
+*.tsv
+*.json
+*.xlsx
+*.xls
+*.sqlite3
+
+# Captcha output folders (your data folders)
+/dataset*/
+outputs/
+checkpoints/
+
+# Model weights or exports
+*.pt
+*.pth
+*.onnx
+*.h5
+
+# Image augmentations
+augmented_data/
+rotated_data/
+
+# Ignore training logs or metrics
+logs/
+wandb/
+*.tensorboard
+
+# Ignore experiment configs
+*.yaml~
+
+# Temp files
 *~
 .*.un~
-
