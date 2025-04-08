@@ -49,6 +49,7 @@ class TestDataset(Dataset):
         self.resize_to = resize_to
         self.vocab = VOCAB
         self.idx_to_char = datasets.ImageFolder(root=train_path).classes
+        self.char_to_idx = {char: idx for idx, char in enumerate(self.idx_to_char)}
 
     def __len__(self):
         return len(self.image_files)

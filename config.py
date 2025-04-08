@@ -17,7 +17,7 @@ CONFIG = {
 #     "learning_rate": 0.001,
 #     "val_split": 0,
 #     "use_colour": False, 
-#     # "image_size": (28, 28),
+#     # "image_size": (28, 28),       # "image_size" not used for rnn_base
 #     "train_path": "dataset/train",
 #     "test_path": "dataset/test"
 # }

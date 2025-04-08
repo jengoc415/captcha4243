@@ -7,6 +7,7 @@ from tqdm import tqdm
 from train import CNN_MODELS, RNN_MODELS
 from utils.dataset import get_img_dataset, get_test_dataset, collate_fn
 from torch.utils.data import DataLoader
+from sklearn.metrics import precision_score, recall_score, f1_score, precision_recall_fscore_support
 
 CLASSES = 36
 
@@ -72,6 +73,9 @@ def evaluate(model, device):
     total_chars = 0
     correct_chars = 0
 
+    y_true = []
+    y_pred = []
+
     if CONFIG["model"] in CNN_MODELS:
         print("Loading test dataset...")
         test_dataset = get_test_dataset(CONFIG['test_path'], CONFIG['use_colour'], CONFIG['image_size'], CONFIG['train_path'])
@@ -97,20 +101,20 @@ def evaluate(model, device):
 
                 assert len(predicted_str) == len(label), f"Length mismatch: {len(predicted_str)} vs {len(label)}"
                 
-                char_matches = sum(1 for a, b in zip(label, predicted_str) if a == b)
+                char_matches = 0
+                for true_c, pred_c in zip(label, predicted_str):
+                    y_true.append(test_dataset.char_to_idx[true_c])                
+                    y_pred.append(test_dataset.char_to_idx.get(pred_c, -1))       
+
+                    if true_c == pred_c:
+                        char_matches += 1 
+
                 correct_chars += char_matches
                 total_chars += len(label)
             
                 word_acc = correct_words / total_words * 100
                 char_acc = correct_chars / total_chars * 100
                 loop.set_postfix(word_acc=f"{word_acc:.2f}%", char_acc=f"{char_acc:.2f}%")
-        
-        word_acc = correct_words / total_words * 100
-        char_acc = correct_chars / total_chars * 100
-        print(f"Word Accuracy: {word_acc:.2f}%")
-        print(f"Character Accuracy: {char_acc:.2f}%")
-
-
         
     elif CONFIG["model"] in RNN_MODELS:
         print("Loading test dataset...")
@@ -125,6 +129,8 @@ def evaluate(model, device):
                 logits = model(images)  # (T, B, C)
                 predictions = greedy_decoder(logits.cpu(), test_dataset.idx_to_char)
 
+                assert len(predictions) == 1, "Batch size must be 1 for this evaluation code!"
+
                 for i in range(len(predictions)):
                     true_label = "".join([test_dataset.idx_to_char[idx.item()] for idx in labels])
                     pred_label = predictions[i]
@@ -133,7 +139,14 @@ def evaluate(model, device):
                     if pred_label == true_label:
                         correct_words += 1
 
-                    char_matches = sum(1 for a, b in zip(true_label, pred_label) if a == b)
+                    char_matches = 0
+                    for true_c, pred_c in zip(true_label, pred_label):
+                        y_true.append(test_dataset.char_to_idx[true_c])                
+                        y_pred.append(test_dataset.char_to_idx.get(pred_c, -1))       
+
+                        if true_c == pred_c:
+                            char_matches += 1 
+
                     correct_chars += char_matches
                     total_chars += len(true_label)
                 
@@ -141,14 +154,28 @@ def evaluate(model, device):
                 char_acc = correct_chars / total_chars * 100
                 loop.set_postfix(word_acc=f"{word_acc:.2f}%", char_acc=f"{char_acc:.2f}%")
 
-        word_acc = correct_words / total_words * 100
-        char_acc = correct_chars / total_chars * 100
-        print(f"Word Accuracy: {word_acc:.2f}%")
-        print(f"Character Accuracy: {char_acc:.2f}%")
+        # labels = sorted(set(y_true + y_pred))  
+        # print("Class | Precision | Recall | F1 Score | Support")
+        # for label, (p, r, f, s) in zip(labels, zip(precision, recall, f1, support)):
+        #     print(f"{test_dataset.idx_to_char[label]} | {p:.2f} | {r:.2f} | {f:.2f} | {s}")
+
 
     else:
         raise ValueError(f"Unknown model '{CONFIG['model']}'")
     
+    word_acc = correct_words / total_words * 100
+    char_acc = correct_chars / total_chars * 100
+    print(f"Word Accuracy: {word_acc:.2f}%")
+    print(f"Character Accuracy: {char_acc:.2f}%")
+
+    precision = precision_score(y_true, y_pred, average='macro') * 100
+    recall = recall_score(y_true, y_pred, average='macro') * 100
+    f1 = f1_score(y_true, y_pred, average='macro') * 100
+
+    print(f"Character-level Macro Precision: {precision:.2f}%")
+    print(f"Character-level Macro Recall: {recall:.2f}%")
+    print(f"Character-level Macro F1 Score: {f1:.2f}%")
+
 
 if __name__ == "__main__":
     print("========== EVALUATE.PY START ==========")
