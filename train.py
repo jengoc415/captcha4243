@@ -79,8 +79,6 @@ def train():
             avg_loss = total_loss / num_batches
             print(f"Epoch [{epoch+1}/{CONFIG['epochs']}], Avg Loss: {avg_loss:.4f}, Accuracy: {100. * correct / total:.2f}%")
 
-        print("Training complete!")
-
     elif CONFIG["model"] in RNN_MODELS:
         # Data Loaders
         print("Loading data loaders...")
@@ -136,6 +134,7 @@ def train():
     else:
         raise ValueError(f"Unknown model '{CONFIG['model']}'")
     
+    print("Training complete!")
     return model
 
 
