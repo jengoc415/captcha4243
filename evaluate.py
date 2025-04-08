@@ -85,10 +85,11 @@ def evaluate(model, device):
         with torch.no_grad():
             loop = tqdm(test_loader, desc="Evaluating")
             for char_images, label in loop:
+                label = label[0]
                 predictions = []
                 for char_image in char_images:
                     char_image = char_image.to(device)
-                    pred = model(char_image.unsqueeze(0))
+                    pred = model(char_image)
                     pred_idx = pred.argmax(dim=1).item()  
                     pred_char = test_dataset.idx_to_char[pred_idx]
                     predictions.append(pred_char)
@@ -99,7 +100,8 @@ def evaluate(model, device):
                 if predicted_str == label:
                     correct_words += 1
 
-                assert len(predicted_str) == len(label), f"Length mismatch: {len(predicted_str)} vs {len(label)}"
+                # This assertion may not hold because splitting of test image into character is not perfect
+                # assert len(predicted_str) == len(label), f"Length mismatch: {len(predicted_str)} vs {len(label)}"
                 
                 char_matches = 0
                 for true_c, pred_c in zip(label, predicted_str):

@@ -43,7 +43,7 @@ class TestDataset(Dataset):
     def __init__(self, folder_path, colour, resize_to, train_path):
         self.folder_path = folder_path
         self.image_files = os.listdir(folder_path)
-        self.transform = get_transform(colour)
+        self.transform = get_transform(colour, resize_to)
         self.seq_to_chars = seq_to_chars
         self.colour = colour
         self.resize_to = resize_to
@@ -61,7 +61,7 @@ class TestDataset(Dataset):
         image_path = os.path.join(self.folder_path, filename)
 
         image = cv2.imread(image_path, cv2.IMREAD_COLOR)
-        char_images_np = self.seq_to_chars(image, self.colour, resize_to=self.resize_to)
+        char_images_np = self.seq_to_chars(image, True, True, resize_to=self.resize_to)
 
         char_images = []
         for c in char_images_np:
