@@ -9,6 +9,7 @@ This project builds a character-level CAPTCHA recognition system using a CNN tra
 ```text
 captcha_project/
 ├── dataset/
+│   ├── test/
 │   ├── train/                  # Original full CAPTCHA images
 │   └── train_letter/           # Output folder with cropped characters (by label)
 │       ├── A/
@@ -16,20 +17,26 @@ captcha_project/
 │       └── ...
 │
 ├── models/
-│   └── cnn.py                  # CNN model definition (CNN, RNN,etc.)
-│   └── pretrained_cnn.py
+│   ├── cnn.py                  # Model definitions (CNN, RNN,etc.)
+│   └── rnn.py
+│
+├── trained_models/
+│   ├── cnn_base.pt             # Save trained models
+│   ├── rnn_base.pt
+│   └── ...
 │
 ├── utils/
-│   ├── preprocessing.py        # Full preprocessing pipeline (line removal, cropping, etc.)
-│   ├── data_generation.py      # Generates dataset by processing full CAPTCHAs
-│   ├── transforms.py           # Torchvision transforms (normalize, resize, augment)
-│   └── loader.py               # Custom Dataset class + PyTorch DataLoader
+│   ├── dataset.py              # Custom Dataset classes and transforms for CAPTCHA images
+│   ├── loader.py               # DataLoader wrappers for character and CAPTCHA datasets
+│   └── preprocessing.py        # Full preprocessing pipeline (line removal, cropping, etc.)
 │
-├── visualise.py                # Visualise preprocessed characters
-├── train.py                    # Training loop for CNN model
+├── README.md                   # Project overview + instructions
 ├── config.py                   # Centralised config for paths, hyperparams, etc.
+├── data_generation.py          # Generates char dataset by processing full CAPTCHAs images
+├── evaluate.py                 # Evaluting models
 ├── requirements.txt            # Python dependencies
-└── README.md                   # Project overview + instructions
+├── train.py                    # Training loop for models
+└── visualise.py                # Visualise preprocessed characters
 ```
 
 ## 🧪 Requirements
@@ -43,7 +50,9 @@ captcha_project/
 
 ## Install with:
 
+```text
 pip install -r requirements.txt
+```
 
 ## Step 1: Preprocess CAPTCHA Images
 
@@ -84,7 +93,7 @@ You can tune:
 
 ```text
 CONFIG = {
-"model": "cnn",
+"model": "cnn_base",
 "batch_size": 64,
 "epochs": 25,
 "learning_rate": 0.001,
@@ -92,3 +101,5 @@ CONFIG = {
 "data_path": "dataset/train_letter"
 }
 ```
+
+List of available models: cnn_base, cnn_pretrained, rnn_base
