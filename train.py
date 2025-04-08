@@ -7,6 +7,7 @@ from utils.loader import get_char_loaders, get_img_loaders
 from models.cnn import SimpleCNN, PretrainedCNN
 from models.rnn import CNNLSTMCTC
 from config import CONFIG
+import os
 
 CNN_MODELS = ['cnn_base', 'cnn_pretrained']
 RNN_MODELS = ['rnn_base']
@@ -23,10 +24,11 @@ def train():
         # Data Loaders
         print("Loading data loaders...")
         train_loader, _, classes = get_char_loaders(
-            data_path=CONFIG["data_path"],
+            data_path=CONFIG["train_path"],
             batch_size=CONFIG["batch_size"],
             val_split=CONFIG["val_split"],
-            colour=CONFIG["use_colour"]
+            colour=CONFIG["use_colour"],
+            resize_to=CONFIG["image_size"]
         )
 
         # Model
@@ -83,7 +85,7 @@ def train():
         # Data Loaders
         print("Loading data loaders...")
         train_loader, _, vocab = get_img_loaders(
-            data_path=CONFIG["data_path"],
+            data_path=CONFIG["train_path"],
             batch_size=CONFIG["batch_size"],
             val_split=CONFIG["val_split"],
             colour=CONFIG["use_colour"]
@@ -133,7 +135,23 @@ def train():
 
     else:
         raise ValueError(f"Unknown model '{CONFIG['model']}'")
+    
+    return model
 
 
 if __name__ == "__main__":
-    train()
+    model_dir = "trained_models"
+    os.makedirs(model_dir, exist_ok=True)
+
+    model_filename = CONFIG["model"]
+    if CONFIG["use_colour"]:
+        model_filename += "_color"
+    model_path = os.path.join(model_dir, model_filename + ".pt")
+
+    if os.path.exists(model_path):
+        print(f"Model '{model_filename}' already exists at '{model_path}'.")
+        print("Please rename or delete the existing model file first.")
+    else:
+        model = train()
+        torch.save(model.state_dict(), model_path)
+        print(f"Model saved to {model_path}")

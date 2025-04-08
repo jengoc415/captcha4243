@@ -1,11 +1,23 @@
 CONFIG = {
-    "model": "cnn",                   # Model type: 'cnn' or 'rnn' (future)
+    "model": "cnn_base",                   # Model type: ['cnn_base', 'cnn_pretrained', 'rnn_base']
     "batch_size": 64,
     "epochs": 5,
     "learning_rate": 0.001,
-    "val_split": 0.2,
-    "use_colour": True, # set to true for RGB input
-    "use_pretrained": True,
-    "image_size": (28, 28),
-    "data_path": "dataset/train_letter"
+    "val_split": 0,
+    "use_colour": False, # set to true for RGB input
+    "image_size": (28, 28),                   # Can be set to None if no resizing is wanted
+    "train_path": "dataset/train_letter",
+    "test_path": "dataset/test"
 }
+
+# CONFIG = {
+#     "model": "rnn_base",                  
+#     "batch_size": 16,
+#     "epochs": 10,
+#     "learning_rate": 0.001,
+#     "val_split": 0,
+#     "use_colour": False, 
+#     # "image_size": (28, 28),
+#     "train_path": "dataset/train",
+#     "test_path": "dataset/test"
+# }

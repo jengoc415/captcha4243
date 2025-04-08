@@ -2,6 +2,7 @@ import os
 import cv2
 import random
 import numpy as np
+from tqdm import tqdm
 from collections import defaultdict
 from PIL import Image
 from utils.preprocessing import seq_to_chars, rotate_image
@@ -22,10 +23,11 @@ def save_image_from_array(img_array, save_path):
     
 def generate_char_dataset(resize_to=None, color=True, split_using_color=True):
     filename_count = defaultdict(int)
-    count = 0
     miscount = 0
     total = len(os.listdir(train_dir))
-    for filename in sorted(os.listdir(train_dir)):
+
+    all_files = sorted(os.listdir(train_dir))
+    for filename in tqdm(all_files, desc="Generating dataset"):
         if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp')):
             img_path = os.path.join(train_dir, filename)
             img = cv2.imread(img_path, cv2.IMREAD_COLOR)
@@ -63,10 +65,6 @@ def generate_char_dataset(resize_to=None, color=True, split_using_color=True):
                         save_image_from_array(resized_new_char, os.path.join(train_letter_dir, letter, new_name))
                     else:
                         save_image_from_array(new_char, os.path.join(train_letter_dir, letter, new_name))
-
-        count += 1
-        if count % 500 == 0:
-            print(f"Done with {count} files")
 
     print(f"{total - miscount} / {total} images have been used")
 

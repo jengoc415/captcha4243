@@ -3,30 +3,71 @@ from torch.utils.data import Dataset
 import os
 import torch
 import cv2
-from utils.preprocessing import crop_image
+from PIL import Image
+from utils.preprocessing import crop_image, seq_to_chars
 
-def get_char_dataset(data_path, colour):
-    return datasets.ImageFolder(root=data_path, transform=get_transform(colour))
+VOCAB = "abcdefghijklmnopqrstuvwxyz0123456789"
+
+def get_char_dataset(data_path, colour, resize_to):
+    return datasets.ImageFolder(root=data_path, transform=get_transform(colour, resize_to))
 
 
 def get_img_dataset(data_path, colour):
-    cwd = os.getcwd()
-    full_path = os.path.join(cwd, data_path)
-    return CaptchaDataset(full_path, colour)
+    return CaptchaDataset(data_path, colour)
 
+def get_test_dataset(data_path, colour, resize_to, train_path):
+    return TestDataset(data_path, colour, resize_to, train_path)
 
-def get_transform(colour):
+def get_transform(colour, resize_to):
+    transform_list = []
+
+    if resize_to:
+        transform_list.append(transforms.Resize(resize_to)) 
+
     if colour:
-        return transforms.Compose([
+        transform_list.extend([
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.5]*3, std=[0.5]*3)
         ])
     else:
-        return transforms.Compose([
+        transform_list.extend([
             transforms.Grayscale(num_output_channels=1),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.5], std=[0.5])
         ])
+
+    return transforms.Compose(transform_list)
+
+
+class TestDataset(Dataset):
+    def __init__(self, folder_path, colour, resize_to, train_path):
+        self.folder_path = folder_path
+        self.image_files = os.listdir(folder_path)
+        self.transform = get_transform(colour)
+        self.seq_to_chars = seq_to_chars
+        self.colour = colour
+        self.resize_to = resize_to
+        self.vocab = VOCAB
+        self.idx_to_char = datasets.ImageFolder(root=train_path).classes
+
+    def __len__(self):
+        return len(self.image_files)
+
+    def __getitem__(self, idx):
+        filename = self.image_files[idx]
+        label = filename.split("-")[0]
+        
+        image_path = os.path.join(self.folder_path, filename)
+
+        image = cv2.imread(image_path, cv2.IMREAD_COLOR)
+        char_images_np = self.seq_to_chars(image, self.colour, resize_to=self.resize_to)
+
+        char_images = []
+        for c in char_images_np:
+            c = cv2.cvtColor(c, cv2.COLOR_BGR2RGB)
+            char_images.append(self.transform(Image.fromarray(c)))
+
+        return char_images, label
 
 
 class CaptchaDataset(Dataset):
@@ -34,7 +75,7 @@ class CaptchaDataset(Dataset):
         self.folder_path = folder_path
         self.colour = colour
         self.image_files = os.listdir(folder_path)
-        self.vocab = "abcdefghijklmnopqrstuvwxyz0123456789"
+        self.vocab = VOCAB
         self.char_to_idx = {c: i + 1 for i, c in enumerate(self.vocab)}  # 0 is CTC blank
         self.idx_to_char = {i + 1: c for i, c in enumerate(self.vocab)}
 

@@ -3,8 +3,8 @@ from torchvision import datasets
 from torch.utils.data import DataLoader, random_split
 from utils.dataset import get_char_dataset, get_img_dataset, collate_fn
 
-def get_char_loaders(data_path, batch_size=64, val_split=0.2, colour=True):
-    dataset = get_char_dataset(data_path, colour=colour)
+def get_char_loaders(data_path, batch_size=64, val_split=0.2, colour=True, resize_to=None):
+    dataset = get_char_dataset(data_path, colour=colour, resize_to=resize_to)
 
     if val_split == 0:
         train_set = dataset
