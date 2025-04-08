@@ -1,61 +1,78 @@
 import os
 import cv2
 import random
+import numpy as np
 from collections import defaultdict
 from PIL import Image
-from utils.preprocessing import preprocess_image, rotate_image
+from utils.preprocessing import seq_to_chars, rotate_image
 
+train_dir = 'dataset/train'
+train_letter_dir = 'dataset/train_letter'
 angles = [-30, -20, -10, 10, 20, 30]
-filename_count = defaultdict(int)
 
 def save_image_from_array(img_array, save_path):
-    img = Image.fromarray(img_array.astype('uint8'))
+    if len(img_array.shape) == 3 and img_array.shape[2] == 3:
+        # Convert BGR (OpenCV) to RGB (PIL)
+        img_array = cv2.cvtColor(img_array, cv2.COLOR_BGR2RGB)
+    
+    img = Image.fromarray(img_array.astype(np.uint8))
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
     img.save(save_path)
-
-def get_letters(cleaned_img, min_area=50):
-    flipped = cv2.bitwise_not(cleaned_img)
-    contours, _ = cv2.findContours(flipped, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-    boxes = [cv2.boundingRect(c) for c in contours if cv2.contourArea(c) >= min_area]
-    boxes = sorted(boxes, key=lambda b: b[0])
-
-    letters = [cleaned_img[y:y+h, x:x+w] for (x, y, w, h) in boxes]
-    return letters
-
-def generate_char_dataset(train_dir='dataset/train', output_dir='dataset/train_letter'):
-    count, miscount = 0, 0
+    
+    
+def generate_char_dataset(resize_to=None, color=True, split_using_color=True):
+    filename_count = defaultdict(int)
+    count = 0
+    miscount = 0
+    total = len(os.listdir(train_dir))
     for filename in sorted(os.listdir(train_dir)):
-        if not filename.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp')):
-            continue
+        if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp')):
+            img_path = os.path.join(train_dir, filename)
+            img = cv2.imread(img_path, cv2.IMREAD_COLOR)
+            if img is None:
+                continue
 
-        label = filename.split('-')[0]
-        img_path = os.path.join(train_dir, filename)
-        img = cv2.imread(img_path, cv2.IMREAD_COLOR)
-        if img is None:
-            continue
+            label = filename.split('-')[0]
+            chars = seq_to_chars(img, color, split_using_color)
 
-        cleaned = preprocess_image(img)
-        chars = get_letters(cleaned)
 
-        if len(label) != len(chars):
-            miscount += 1
+            if len(label) != len(chars):
+                miscount += 1
+                continue
 
-        for i in range(min(len(label), len(chars))):
-            letter = label[i]
-            char = cv2.resize(chars[i], (28, 28))
-            new_name = f'img-{filename_count[letter]}.png'
-            filename_count[letter] += 1
-            save_image_from_array(char, os.path.join(output_dir, letter, new_name))
-
-            for angle in random.sample(angles, 3):
-                rotated = rotate_image(char, angle)
-                new_name = f'img-{filename_count[letter]}.png'
+            for i in range(min(len(label), len(chars))):
+                letter = label[i]
+                char = chars[i]
+                new_name = 'img-' + str(filename_count[letter]) + '.png'
                 filename_count[letter] += 1
-                save_image_from_array(rotated, os.path.join(output_dir, letter, new_name))
+                
+                if resize_to:
+                    resized_char = cv2.resize(char, resize_to)
+                    save_image_from_array(resized_char, os.path.join(train_letter_dir, letter, new_name))
+                else:
+                    save_image_from_array(char, os.path.join(train_letter_dir, letter, new_name))
+                    
+                random_numbers = random.sample(range(len(angles)), 3)              
+                for no in random_numbers:
+                    new_char = rotate_image(char, angles[no])
+                    new_name ='img-' + str(filename_count[letter]) + '.png'
+                    filename_count[letter] += 1
+                    
+                    if resize_to:
+                        resized_new_char = cv2.resize(new_char, resize_to)
+                        save_image_from_array(resized_new_char, os.path.join(train_letter_dir, letter, new_name))
+                    else:
+                        save_image_from_array(new_char, os.path.join(train_letter_dir, letter, new_name))
 
         count += 1
         if count % 500 == 0:
-            print(f"Processed {count} images")
+            print(f"Done with {count} files")
 
-    print(f"Done. Mismatched character counts: {miscount}")
+    print(f"{total - miscount} / {total} images have been used")
+
+    
+if __name__ == "__main__":
+    # resize_to: output char images will all be this size
+    # color: False to get black and white char images, True to get original color char images
+    # split_using_color: True if we want to make use of color to separate overlapping characters
+    generate_char_dataset(resize_to=(28, 28), color=True, split_using_color=True)

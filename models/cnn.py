@@ -2,10 +2,10 @@ import torch.nn as nn
 import torchvision.models as models
 
 class SimpleCNN(nn.Module):
-    def __init__(self, num_classes):
+    def __init__(self, num_classes, in_channels):
         super().__init__()
         self.conv = nn.Sequential(
-            nn.Conv2d(3, 32, 3, padding=1),  # now 3 channels
+            nn.Conv2d(in_channels, 32, 3, padding=1),  # now 3 channels
             nn.ReLU(),
             nn.MaxPool2d(2),
             nn.Conv2d(32, 64, 3, padding=1),
