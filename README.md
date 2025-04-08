@@ -16,7 +16,8 @@ captcha_project/
 │       └── ...
 │
 ├── models/
-│   └── cnn.py                  # CNN model definition (CNN, RNN, etc.)
+│   └── cnn.py                  # CNN model definition (CNN, RNN,etc.)
+│   └── pretrained_cnn.py
 │
 ├── utils/
 │   ├── preprocessing.py        # Full preprocessing pipeline (line removal, cropping, etc.)

@@ -12,8 +12,8 @@ import numpy as np
 import os
 from collections import defaultdict
 
-train_dir = 'train'
-train_letter_dir = 'train_letter'
+train_dir = 'dataset/train'
+train_letter_dir = 'dataset/train_letter'
 angles = [-30, -20, -10, 10, 20, 30]
 
 
@@ -222,7 +222,7 @@ def preprocess_image(img, resize_to=None, color=False, split_using_color=False, 
         blockSize=15,
         C=3
     )
-    
+
     binary_blur = cv2.GaussianBlur(binary, (3, 3), sigmaX=0)
     
     letters = get_letters(binary, binary_blur, color_cleaned, color=color, split_using_color=split_using_color, min_area=min_area, min_fill_ratio=min_fill_ratio, max_color_diff=max_color_diff)
@@ -331,4 +331,4 @@ if __name__ == "__main__":
     # resize_to: output char images will all be this size
     # color: False to get black and white char images, True to get original color char images
     # split_using_color: True if we want to make use of color to separate overlapping characters
-    generate_char_dataset(resize_to=(28, 28), color=False, split_using_color=True)
+    generate_char_dataset(resize_to=(28, 28), color=True, split_using_color=True)
