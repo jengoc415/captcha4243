@@ -5,17 +5,17 @@ import torch
 import cv2
 from utils.preprocessing import crop_image
 
-def get_char_dataset(data_path, colour=True):
+def get_char_dataset(data_path, colour):
     return datasets.ImageFolder(root=data_path, transform=get_transform(colour))
 
 
-def get_img_dataset(data_path, colour=True):
+def get_img_dataset(data_path, colour):
     cwd = os.getcwd()
     full_path = os.path.join(cwd, data_path)
     return CaptchaDataset(full_path, colour)
 
 
-def get_transform(colour=True):
+def get_transform(colour):
     if colour:
         return transforms.Compose([
             transforms.ToTensor(),
