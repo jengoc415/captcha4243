@@ -12,7 +12,7 @@ import os
 CNN_MODELS = ['cnn_base', 'cnn_pretrained']
 RNN_MODELS = ['rnn_base']
 
-def train():
+def train(model_name):
     print("========== TRAIN.PY START ==========")
 
     # Setup
@@ -32,7 +32,7 @@ def train():
         )
 
         # Model
-        print("Initializing model...")
+        print(f"Initializing {model_name} model...")
         if CONFIG["model"] == 'cnn_base':
             in_channels = 3 if CONFIG["use_colour"] else 1
             model = SimpleCNN(num_classes=len(classes), in_channels=in_channels).to(device)
@@ -90,7 +90,7 @@ def train():
         )
 
         # Model
-        print("Initializing model...")
+        print(f"Initializing {model_name} model...")
         if CONFIG["model"] == 'rnn_base':
             in_channels = 3 if CONFIG["use_colour"] else 1
             model = CNNLSTMCTC(len(vocab), in_channels=in_channels).to(device)
@@ -151,6 +151,6 @@ if __name__ == "__main__":
         print(f"Model '{model_filename}' already exists at '{model_path}'.")
         print("Please rename or delete the existing model file first.")
     else:
-        model = train()
+        model = train(model_filename)
         torch.save(model.state_dict(), model_path)
         print(f"Model saved to {model_path}")
