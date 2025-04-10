@@ -120,7 +120,7 @@ def evaluate(model, device):
         
     elif CONFIG["model"] in RNN_MODELS:
         print("Loading test dataset...")
-        test_dataset = get_img_dataset(CONFIG['test_path'], CONFIG['use_colour'])
+        test_dataset = get_img_dataset(CONFIG['test_path'], CONFIG['use_colour'], CONFIG['image_size'])
         test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False, collate_fn=collate_fn)
 
         print("Evaluating model...")

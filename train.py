@@ -8,6 +8,7 @@ from models.cnn import SimpleCNN, PretrainedCNN
 from models.rnn import CNNLSTMCTC
 from config import CONFIG
 import os
+import matplotlib.pyplot as plt
 
 CNN_MODELS = ['cnn_base', 'cnn_pretrained']
 RNN_MODELS = ['rnn_base']
@@ -23,7 +24,7 @@ def train(model_name):
     if CONFIG["model"] in CNN_MODELS:
         # Data Loaders
         print("Loading data loaders...")
-        train_loader, _, classes = get_char_loaders(
+        train_loader, val_loader, classes = get_char_loaders(
             data_path=CONFIG["train_path"],
             batch_size=CONFIG["batch_size"],
             val_split=CONFIG["val_split"],
@@ -47,6 +48,11 @@ def train(model_name):
         # Optimizer and Loss
         criterion = nn.CrossEntropyLoss()
         optimizer = optim.Adam(model.parameters(), lr=CONFIG["learning_rate"])
+
+        # Track validation loss
+        train_losses = []
+        val_losses = []
+        epochs = []
 
         # Training loop
         print("Begin training model")
@@ -77,16 +83,35 @@ def train(model_name):
                 loop.set_postfix(loss=loss.item(), acc=100. * correct / total)
 
             avg_loss = total_loss / num_batches
-            print(f"Epoch [{epoch+1}/{CONFIG['epochs']}], Avg Loss: {avg_loss:.4f}, Accuracy: {100. * correct / total:.2f}%")
+            train_losses.append(avg_loss)
+
+            model.eval()
+            val_loss = 0
+            val_batches = 0
+
+            with torch.no_grad():
+                for images, labels in val_loader:
+                    images, labels = images.to(device), labels.to(device)
+                    outputs = model(images)
+                    loss = criterion(outputs, labels)
+                    val_loss += loss.item()
+                    val_batches += 1
+
+            avg_val_loss = val_loss / val_batches
+            val_losses.append(avg_val_loss)
+            epochs.append(epoch + 1)
+
+            print(f"Epoch [{epoch+1}/{CONFIG['epochs']}], Avg Loss: {avg_loss:.4f}, Avg Val Loss: {avg_val_loss:.4f}, Accuracy: {100. * correct / total:.2f}%")
 
     elif CONFIG["model"] in RNN_MODELS:
         # Data Loaders
         print("Loading data loaders...")
-        train_loader, _, vocab = get_img_loaders(
+        train_loader, val_loader, vocab = get_img_loaders(
             data_path=CONFIG["train_path"],
             batch_size=CONFIG["batch_size"],
             val_split=CONFIG["val_split"],
-            colour=CONFIG["use_colour"]
+            colour=CONFIG["use_colour"],
+            resize_to=CONFIG["image_size"]
         )
 
         # Model
@@ -100,6 +125,11 @@ def train(model_name):
         # Optimizer and Loss
         criterion = nn.CTCLoss(blank=0, zero_infinity=True)
         optimizer = optim.Adam(model.parameters(), lr=CONFIG["learning_rate"])
+
+        # Track validation loss
+        train_losses = []
+        val_losses = []
+        epochs = []
 
         # Training loop
         print("Begin training model")
@@ -129,18 +159,64 @@ def train(model_name):
                 loop.set_postfix(loss=loss.item())
 
             avg_loss = total_loss / num_batches
-            print(f"Epoch [{epoch+1}/{CONFIG['epochs']}], Avg Loss: {avg_loss:.4f}")
+            train_losses.append(avg_loss)
+
+            model.eval()
+            val_loss = 0
+            val_batches = 0
+
+            with torch.no_grad():
+                for images, labels, label_lengths in val_loader:
+                    images, labels = images.to(device), labels.to(device)
+                    label_lengths = label_lengths.to(device)
+
+                    logits = model(images)
+                    input_lengths = torch.full(size=(images.size(0),), fill_value=logits.size(0), dtype=torch.long).to(device)
+
+                    log_probs = F.log_softmax(logits, dim=2)
+                    loss = criterion(log_probs, labels, input_lengths, label_lengths)
+
+                    val_loss += loss.item()
+                    val_batches += 1
+
+            avg_val_loss = val_loss / val_batches
+            val_losses.append(avg_val_loss)
+            epochs.append(epoch + 1)
+
+            print(f"Epoch [{epoch+1}/{CONFIG['epochs']}], Avg Loss: {avg_loss:.4f}, Avg Val Loss: {avg_val_loss:.4f}")
 
     else:
         raise ValueError(f"Unknown model '{CONFIG['model']}'")
     
     print("Training complete!")
-    return model
+    return model, (train_losses, val_losses, epochs)
+
+
+def save_learning_curve(loss_data, model_name):
+    train_losses, val_losses, epochs = loss_data  # Unpack the tuple
+
+    plt.figure()
+    plt.plot(epochs, train_losses, label="Training Loss", marker='o', color='blue')
+    plt.plot(epochs, val_losses, label="Validation Loss", marker='s', color='red')
+    plt.title(f"Learning Curve - {model_name}")
+    plt.xlabel("Epoch")
+    plt.ylabel("Loss")
+    plt.legend()
+    plt.grid(True)
+
+    save_path = f"{model_name}.png"
+    plt.savefig(save_path)
+    plt.close()  # Make sure to close to avoid memory issues
+    print(f"Saved learning curve as {save_path}")
+
 
 
 if __name__ == "__main__":
     model_dir = "trained_models"
     os.makedirs(model_dir, exist_ok=True)
+
+    plots_dir = "learning_curves"
+    os.makedirs(plots_dir, exist_ok=True)
 
     model_filename = CONFIG["model"]
     if CONFIG["use_colour"]:
@@ -151,6 +227,12 @@ if __name__ == "__main__":
         print(f"Model '{model_filename}' already exists at '{model_path}'.")
         print("Please rename or delete the existing model file first.")
     else:
-        model = train(model_filename)
+        max_key_len = max(len(key) for key in CONFIG)
+        for key, value in CONFIG.items():
+            print(f"{key:<{max_key_len}} : {value}")
+
+        model, loss_data = train(model_filename)
         torch.save(model.state_dict(), model_path)
         print(f"Model saved to {model_path}")
+
+        save_learning_curve(loss_data, model_filename)

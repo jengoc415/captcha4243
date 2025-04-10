@@ -12,8 +12,8 @@ def get_char_dataset(data_path, colour, resize_to):
     return datasets.ImageFolder(root=data_path, transform=get_transform(colour, resize_to))
 
 
-def get_img_dataset(data_path, colour):
-    return CaptchaDataset(data_path, colour)
+def get_img_dataset(data_path, colour, resize_to):
+    return CaptchaDataset(data_path, colour, resize_to)
 
 def get_test_dataset(data_path, colour, resize_to, train_path):
     return TestDataset(data_path, colour, resize_to, train_path)
@@ -73,9 +73,10 @@ class TestDataset(Dataset):
 
 
 class CaptchaDataset(Dataset):
-    def __init__(self, folder_path, colour):
+    def __init__(self, folder_path, colour, resize_to):
         self.folder_path = folder_path
         self.colour = colour
+        self.resize_to = resize_to
         self.image_files = os.listdir(folder_path)
         self.vocab = VOCAB
         self.char_to_idx = {c: i + 1 for i, c in enumerate(self.vocab)}  # 0 is CTC blank
@@ -95,12 +96,14 @@ class CaptchaDataset(Dataset):
         
         if not self.colour:
             image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            image = cv2.resize(image, (200, 50))
+            if self.resize_to:
+                image = cv2.resize(image, self.resize_to)
             image = image.astype("float32") / 255.0
             image = torch.from_numpy(image).unsqueeze(0)
         else:
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            image = cv2.resize(image, (200, 50))
+            if self.resize_to:
+                image = cv2.resize(image, self.resize_to)
             image = image.astype("float32") / 255.0
             image = torch.from_numpy(image).permute(2, 0, 1)
         

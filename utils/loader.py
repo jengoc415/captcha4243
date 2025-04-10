@@ -4,7 +4,7 @@ from torch.utils.data import DataLoader, random_split
 from utils.dataset import get_char_dataset, get_img_dataset, collate_fn
 
 def get_char_loaders(data_path, batch_size=64, val_split=0.2, colour=True, resize_to=None):
-    dataset = get_char_dataset(data_path, colour=colour, resize_to=resize_to)
+    dataset = get_char_dataset(data_path, colour, resize_to)
 
     if val_split == 0:
         train_set = dataset
@@ -24,8 +24,8 @@ def get_char_loaders(data_path, batch_size=64, val_split=0.2, colour=True, resiz
     return train_loader, val_loader, dataset.classes
 
 
-def get_img_loaders(data_path, batch_size=64, val_split=0.2, colour=True):
-    dataset = get_img_dataset(data_path, colour=colour)
+def get_img_loaders(data_path, batch_size=64, val_split=0.2, colour=True, resize_to=None):
+    dataset = get_img_dataset(data_path, colour, resize_to)
 
     if val_split == 0:
         train_set = dataset
