@@ -244,16 +244,17 @@ def train():
 
             if CONFIG["model"] in CNN_MODELS:
                 acc = 100. * correct / total
-                print(f"Epoch [{epoch+1}/{CONFIG['epochs']}], Avg Loss: {avg_loss:.4f}, Accuracy: {acc:.2f}%")
+                print(f"Epoch [{epoch+1}/{CONFIG['epochs']}], Avg Loss: {avg_loss:.4f}, Avg Val Loss: {avg_val_loss:.4f}, Accuracy: {acc:.2f}%")
             else:
-                print(f"Epoch [{epoch+1}/{CONFIG['epochs']}], Avg Loss: {avg_loss:.4f}")
+                print(f"Epoch [{epoch+1}/{CONFIG['epochs']}], Avg Loss: {avg_loss:.4f}, Avg Val Loss: {avg_val_loss:.4f}")
         
         else:
             if CONFIG["model"] in CNN_MODELS:
                 acc = 100. * correct / total
-                print(f"Epoch [{epoch+1}/{CONFIG['epochs']}], Avg Loss: {avg_loss:.4f}, Avg Val Loss: {avg_val_loss:.4f}, Accuracy: {acc:.2f}%")
+                print(f"Epoch [{epoch+1}/{CONFIG['epochs']}], Avg Loss: {avg_loss:.4f}, Accuracy: {acc:.2f}%")
             else:
-                print(f"Epoch [{epoch+1}/{CONFIG['epochs']}], Avg Loss: {avg_loss:.4f}, Avg Val Loss: {avg_val_loss:.4f}")
+                print(f"Epoch [{epoch+1}/{CONFIG['epochs']}], Avg Loss: {avg_loss:.4f}")
+            
 
         # Save checkpoint at end of each epoch
         loss_data = (train_losses, val_losses, epochs)
