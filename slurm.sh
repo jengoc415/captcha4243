@@ -1,11 +1,15 @@
 #!/bin/sh
-#SBATCH --job-name=char_recognition
+##SBATCH --job-name=char_recognition
 #SBATCH --time=180
 #SBATCH --mail-type=END,FAIL
 #SBATCH --mem-per-gpu=80G
 #SBATCH --gpus=a100-80:1
 #SBATCH --mail-user=email@u.nus.edu
 ###SBATCH --nodelist=xgph1
+
+#SBATCH --output=logs/%x.out
+
+CONFIG_FILE = $1
 
 echo "SBATCH_INFO: Printing diagnostics (visible devices and nvidia-smi)..."
 echo $CUDA_VISIBLE_DEVICES
@@ -15,7 +19,7 @@ srun nvidia-smi
 #srun accelerate env
 
 echo "SBATCH_INFO: Running character recognition training..."
-srun python train_slurm.py
+srun python train_slurm.py --config ${CONFIG_FILE}
 
 echo "SBATCH_INFO: Running character recognition evaluation..."
 srun python evaluate_slurm.py

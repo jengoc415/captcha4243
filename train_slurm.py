@@ -6,11 +6,14 @@ from tqdm import tqdm
 import os
 import sys
 import matplotlib.pyplot as plt
+import argparse
+import json
 
 from utils.loader import get_char_loaders, get_img_loaders
 from models.cnn import SimpleCNN, PretrainedCNN
 from models.rnn import CNNLSTMCTC
-from config import CONFIG
+
+CONFIG = None
 
 CNN_MODELS = ['cnn_base', 'cnn_pretrained']
 RNN_MODELS = ['rnn_base']
@@ -262,6 +265,13 @@ def train():
     return model
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--config", type=str, required=True, help="Path to config JSON file")
+    args = parser.parse_args()
+
+    with open(args.config, "r") as f:
+        CONFIG = json.load(f)
+
     if is_running_under_slurm():
         max_key_len = max(len(key) for key in CONFIG)
         for key, value in CONFIG.items():
