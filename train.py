@@ -84,24 +84,27 @@ def train(model_name):
 
             avg_loss = total_loss / num_batches
             train_losses.append(avg_loss)
-
-            model.eval()
-            val_loss = 0
-            val_batches = 0
-
-            with torch.no_grad():
-                for images, labels in val_loader:
-                    images, labels = images.to(device), labels.to(device)
-                    outputs = model(images)
-                    loss = criterion(outputs, labels)
-                    val_loss += loss.item()
-                    val_batches += 1
-
-            avg_val_loss = val_loss / val_batches
-            val_losses.append(avg_val_loss)
             epochs.append(epoch + 1)
 
-            print(f"Epoch [{epoch+1}/{CONFIG['epochs']}], Avg Loss: {avg_loss:.4f}, Avg Val Loss: {avg_val_loss:.4f}, Accuracy: {100. * correct / total:.2f}%")
+            if val_loader:
+                model.eval()
+                val_loss = 0
+                val_batches = 0
+
+                with torch.no_grad():
+                    for images, labels in val_loader:
+                        images, labels = images.to(device), labels.to(device)
+                        outputs = model(images)
+                        loss = criterion(outputs, labels)
+                        val_loss += loss.item()
+                        val_batches += 1
+
+                avg_val_loss = val_loss / val_batches
+                val_losses.append(avg_val_loss)
+
+                print(f"Epoch [{epoch+1}/{CONFIG['epochs']}], Avg Loss: {avg_loss:.4f}, Avg Val Loss: {avg_val_loss:.4f}, Accuracy: {100. * correct / total:.2f}%")
+            else:
+                print(f"Epoch [{epoch+1}/{CONFIG['epochs']}], Avg Loss: {avg_loss:.4f}, Accuracy: {100. * correct / total:.2f}%")
 
     elif CONFIG["model"] in RNN_MODELS:
         # Data Loaders
@@ -160,30 +163,33 @@ def train(model_name):
 
             avg_loss = total_loss / num_batches
             train_losses.append(avg_loss)
-
-            model.eval()
-            val_loss = 0
-            val_batches = 0
-
-            with torch.no_grad():
-                for images, labels, label_lengths in val_loader:
-                    images, labels = images.to(device), labels.to(device)
-                    label_lengths = label_lengths.to(device)
-
-                    logits = model(images)
-                    input_lengths = torch.full(size=(images.size(0),), fill_value=logits.size(0), dtype=torch.long).to(device)
-
-                    log_probs = F.log_softmax(logits, dim=2)
-                    loss = criterion(log_probs, labels, input_lengths, label_lengths)
-
-                    val_loss += loss.item()
-                    val_batches += 1
-
-            avg_val_loss = val_loss / val_batches
-            val_losses.append(avg_val_loss)
             epochs.append(epoch + 1)
 
-            print(f"Epoch [{epoch+1}/{CONFIG['epochs']}], Avg Loss: {avg_loss:.4f}, Avg Val Loss: {avg_val_loss:.4f}")
+            if val_loader:
+                model.eval()
+                val_loss = 0
+                val_batches = 0
+
+                with torch.no_grad():
+                    for images, labels, label_lengths in val_loader:
+                        images, labels = images.to(device), labels.to(device)
+                        label_lengths = label_lengths.to(device)
+
+                        logits = model(images)
+                        input_lengths = torch.full(size=(images.size(0),), fill_value=logits.size(0), dtype=torch.long).to(device)
+
+                        log_probs = F.log_softmax(logits, dim=2)
+                        loss = criterion(log_probs, labels, input_lengths, label_lengths)
+
+                        val_loss += loss.item()
+                        val_batches += 1
+
+                avg_val_loss = val_loss / val_batches
+                val_losses.append(avg_val_loss)
+
+                print(f"Epoch [{epoch+1}/{CONFIG['epochs']}], Avg Loss: {avg_loss:.4f}, Avg Val Loss: {avg_val_loss:.4f}")
+            else:
+                print(f"Epoch [{epoch+1}/{CONFIG['epochs']}], Avg Loss: {avg_loss:.4f}")
 
     else:
         raise ValueError(f"Unknown model '{CONFIG['model']}'")
@@ -193,11 +199,12 @@ def train(model_name):
 
 
 def save_learning_curve(loss_data, model_name):
-    train_losses, val_losses, epochs = loss_data  # Unpack the tuple
+    train_losses, val_losses, epochs = loss_data
 
     plt.figure()
     plt.plot(epochs, train_losses, label="Training Loss", marker='o', color='blue')
-    plt.plot(epochs, val_losses, label="Validation Loss", marker='s', color='red')
+    if val_losses is not None:
+        plt.plot(epochs, val_losses, label="Validation Loss", marker='s', color='red')
     plt.title(f"Learning Curve - {model_name}")
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
@@ -206,7 +213,7 @@ def save_learning_curve(loss_data, model_name):
 
     save_path = f"{model_name}.png"
     plt.savefig(save_path)
-    plt.close()  # Make sure to close to avoid memory issues
+    plt.close()
     print(f"Saved learning curve as {save_path}")
 
 
