@@ -1,14 +1,17 @@
 import os
 import sys
+import argparse
+import json
 import torch
 from tqdm import tqdm
-from config import CONFIG
 from models.cnn import SimpleCNN, PretrainedCNN
 from models.rnn import CNNLSTMCTC
 from utils.dataset import get_img_dataset, get_test_dataset, collate_fn
 from train import CNN_MODELS, RNN_MODELS
 from torch.utils.data import DataLoader
 from sklearn.metrics import precision_score, recall_score, f1_score
+
+CONFIG = None
 
 CLASSES = 36
 PRINT_EVERY = 50  # For clean SLURM logs
@@ -163,6 +166,13 @@ def evaluate(model, device):
     print(f"Character-level Macro F1 Score: {f1:.2f}%")
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--config", type=str, required=True, help="Path to config JSON file")
+    args = parser.parse_args()
+
+    with open(args.config, "r") as f:
+        CONFIG = json.load(f)
+
     print("========== EVALUATE.PY START ==========")
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = load_model(device)
