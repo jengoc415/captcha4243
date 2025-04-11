@@ -5,7 +5,7 @@ import json
 import torch
 from tqdm import tqdm
 from models.cnn import SimpleCNN, PretrainedCNN
-from models.rnn import CNNLSTMCTC
+from models.rnn import CNNLSTMCTC, ResNetCTCModel
 from utils.dataset import get_img_dataset, get_test_dataset, collate_fn
 from train import CNN_MODELS, RNN_MODELS
 from torch.utils.data import DataLoader
@@ -44,6 +44,8 @@ def load_model(device):
         in_channels = 3 if CONFIG["use_colour"] else 1
         if CONFIG["model"] == 'rnn_base':
             model = CNNLSTMCTC(CLASSES, in_channels=in_channels)
+        elif CONFIG["model"] == 'rnn_pretrained':
+            model = ResNetCTCModel(CLASSES)
         else:
             raise ValueError(f"Unknown model '{CONFIG['model']}'")
 

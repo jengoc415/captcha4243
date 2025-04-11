@@ -1,4 +1,5 @@
 from torchvision import datasets, transforms
+import torchvision.transforms.functional as TF
 from torch.utils.data import Dataset
 import os
 import torch
@@ -100,12 +101,15 @@ class CaptchaDataset(Dataset):
                 image = cv2.resize(image, self.resize_to)
             image = image.astype("float32") / 255.0
             image = torch.from_numpy(image).unsqueeze(0)
+            image = TF.normalize(image, mean=[0.5], std=[0.5])
         else:
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             if self.resize_to:
                 image = cv2.resize(image, self.resize_to)
             image = image.astype("float32") / 255.0
             image = torch.from_numpy(image).permute(2, 0, 1)
+            image = TF.normalize(image, mean=[0.5]*3, std=[0.5]*3)
+            # image = TF.normalize(image, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         
         return image, label, len(label)
 

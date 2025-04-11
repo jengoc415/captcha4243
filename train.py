@@ -5,13 +5,13 @@ import torch.nn.functional as F
 from tqdm import tqdm
 from utils.loader import get_char_loaders, get_img_loaders
 from models.cnn import SimpleCNN, PretrainedCNN
-from models.rnn import CNNLSTMCTC
+from models.rnn import CNNLSTMCTC, ResNetCTCModel
 from config import CONFIG
 import os
 import matplotlib.pyplot as plt
 
 CNN_MODELS = ['cnn_base', 'cnn_pretrained']
-RNN_MODELS = ['rnn_base']
+RNN_MODELS = ['rnn_base', 'rnn_pretrained']
 
 def train(model_name):
     print("========== TRAIN.PY START ==========")
@@ -122,6 +122,8 @@ def train(model_name):
         if CONFIG["model"] == 'rnn_base':
             in_channels = 3 if CONFIG["use_colour"] else 1
             model = CNNLSTMCTC(len(vocab), in_channels=in_channels).to(device)
+        elif CONFIG["model"] == 'rnn_pretrained':
+            model = ResNetCTCModel(len(vocab)).to(device)
         else:
             raise ValueError(f"Unknown model '{CONFIG['model']}'")
 
