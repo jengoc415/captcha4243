@@ -1,0 +1,256 @@
+SBATCH_INFO: Printing diagnostics (visible devices and nvidia-smi)...
+0
+Fri Apr 11 12:09:31 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 555.42.02              Driver Version: 555.42.02      CUDA Version: 12.5     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          Off |   00000000:98:00.0 Off |                    0 |
+| N/A   58C    P0             57W /  300W |       1MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+SBATCH_INFO: Running character recognition training...
+model         : cnn_base
+batch_size    : 64
+epochs        : 15
+learning_rate : 0.001
+val_split     : 0.2
+use_colour    : True
+image_size    : [28, 28]
+train_path    : dataset/train_letter
+test_path     : dataset/test
+========== TRAIN.PY START ==========
+Using device: cuda
+Loading data loaders...
+Initializing cnn_base_color model...
+Begin training...
+Epoch 1/15 | Batch 0/2117 | Loss: 3.5727 | Acc: 6.25%
+Epoch 1/15 | Batch 250/2117 | Loss: 3.3082 | Acc: 4.25%
+Epoch 1/15 | Batch 500/2117 | Loss: 2.6566 | Acc: 10.30%
+Epoch 1/15 | Batch 750/2117 | Loss: 2.2345 | Acc: 17.28%
+Epoch 1/15 | Batch 1000/2117 | Loss: 2.3005 | Acc: 22.98%
+Epoch 1/15 | Batch 1250/2117 | Loss: 2.1063 | Acc: 27.40%
+Epoch 1/15 | Batch 1500/2117 | Loss: 1.9134 | Acc: 31.17%
+Epoch 1/15 | Batch 1750/2117 | Loss: 1.6806 | Acc: 34.29%
+Epoch 1/15 | Batch 2000/2117 | Loss: 1.4232 | Acc: 36.91%
+Epoch [1/15], Avg Loss: 2.2676, Avg Val Loss: 1.6035, Accuracy: 38.01%
+Checkpoint saved at trained_models/cnn_base_color_checkpoint.pt
+Epoch 2/15 | Batch 0/2117 | Loss: 1.4255 | Acc: 65.62%
+Epoch 2/15 | Batch 250/2117 | Loss: 1.2993 | Acc: 58.98%
+Epoch 2/15 | Batch 500/2117 | Loss: 1.5915 | Acc: 59.56%
+Epoch 2/15 | Batch 750/2117 | Loss: 1.5125 | Acc: 60.61%
+Epoch 2/15 | Batch 1000/2117 | Loss: 1.0945 | Acc: 61.42%
+Epoch 2/15 | Batch 1250/2117 | Loss: 1.2962 | Acc: 62.01%
+Epoch 2/15 | Batch 1500/2117 | Loss: 1.0239 | Acc: 62.69%
+Epoch 2/15 | Batch 1750/2117 | Loss: 1.1639 | Acc: 63.29%
+Epoch 2/15 | Batch 2000/2117 | Loss: 0.6660 | Acc: 63.87%
+Epoch [2/15], Avg Loss: 1.2934, Avg Val Loss: 1.1678, Accuracy: 64.05%
+Checkpoint saved at trained_models/cnn_base_color_checkpoint.pt
+Epoch 3/15 | Batch 0/2117 | Loss: 1.3477 | Acc: 67.19%
+Epoch 3/15 | Batch 250/2117 | Loss: 0.9595 | Acc: 69.30%
+Epoch 3/15 | Batch 500/2117 | Loss: 0.7363 | Acc: 69.51%
+Epoch 3/15 | Batch 750/2117 | Loss: 1.0069 | Acc: 69.71%
+Epoch 3/15 | Batch 1000/2117 | Loss: 0.8504 | Acc: 69.88%
+Epoch 3/15 | Batch 1250/2117 | Loss: 0.7215 | Acc: 70.07%
+Epoch 3/15 | Batch 1500/2117 | Loss: 0.7829 | Acc: 70.39%
+Epoch 3/15 | Batch 1750/2117 | Loss: 0.9785 | Acc: 70.63%
+Epoch 3/15 | Batch 2000/2117 | Loss: 0.9114 | Acc: 70.82%
+Epoch [3/15], Avg Loss: 1.0357, Avg Val Loss: 0.9479, Accuracy: 70.96%
+Checkpoint saved at trained_models/cnn_base_color_checkpoint.pt
+Epoch 4/15 | Batch 0/2117 | Loss: 1.1151 | Acc: 64.06%
+Epoch 4/15 | Batch 250/2117 | Loss: 0.8615 | Acc: 73.11%
+Epoch 4/15 | Batch 500/2117 | Loss: 0.8366 | Acc: 73.47%
+Epoch 4/15 | Batch 750/2117 | Loss: 0.8925 | Acc: 73.37%
+Epoch 4/15 | Batch 1000/2117 | Loss: 0.7895 | Acc: 73.43%
+Epoch 4/15 | Batch 1250/2117 | Loss: 0.7522 | Acc: 73.64%
+Epoch 4/15 | Batch 1500/2117 | Loss: 0.7106 | Acc: 73.86%
+Epoch 4/15 | Batch 1750/2117 | Loss: 0.8560 | Acc: 74.10%
+Epoch 4/15 | Batch 2000/2117 | Loss: 0.9475 | Acc: 74.16%
+Epoch [4/15], Avg Loss: 0.9057, Avg Val Loss: 0.8549, Accuracy: 74.32%
+Checkpoint saved at trained_models/cnn_base_color_checkpoint.pt
+Epoch 5/15 | Batch 0/2117 | Loss: 0.9852 | Acc: 76.56%
+Epoch 5/15 | Batch 250/2117 | Loss: 0.7168 | Acc: 75.72%
+Epoch 5/15 | Batch 500/2117 | Loss: 0.9195 | Acc: 75.51%
+Epoch 5/15 | Batch 750/2117 | Loss: 0.6287 | Acc: 75.61%
+Epoch 5/15 | Batch 1000/2117 | Loss: 0.9419 | Acc: 75.70%
+Epoch 5/15 | Batch 1250/2117 | Loss: 0.9866 | Acc: 75.84%
+Epoch 5/15 | Batch 1500/2117 | Loss: 1.0103 | Acc: 76.04%
+Epoch 5/15 | Batch 1750/2117 | Loss: 1.2098 | Acc: 76.05%
+Epoch 5/15 | Batch 2000/2117 | Loss: 0.8414 | Acc: 76.14%
+Epoch [5/15], Avg Loss: 0.8281, Avg Val Loss: 0.8059, Accuracy: 76.17%
+Checkpoint saved at trained_models/cnn_base_color_checkpoint.pt
+Epoch 6/15 | Batch 0/2117 | Loss: 0.6772 | Acc: 79.69%
+Epoch 6/15 | Batch 250/2117 | Loss: 0.6939 | Acc: 76.86%
+Epoch 6/15 | Batch 500/2117 | Loss: 0.8453 | Acc: 77.21%
+Epoch 6/15 | Batch 750/2117 | Loss: 0.5545 | Acc: 77.12%
+Epoch 6/15 | Batch 1000/2117 | Loss: 0.4986 | Acc: 77.13%
+Epoch 6/15 | Batch 1250/2117 | Loss: 0.8237 | Acc: 77.24%
+Epoch 6/15 | Batch 1500/2117 | Loss: 0.4947 | Acc: 77.37%
+Epoch 6/15 | Batch 1750/2117 | Loss: 0.6707 | Acc: 77.42%
+Epoch 6/15 | Batch 2000/2117 | Loss: 0.6350 | Acc: 77.46%
+Epoch [6/15], Avg Loss: 0.7732, Avg Val Loss: 0.7794, Accuracy: 77.50%
+Checkpoint saved at trained_models/cnn_base_color_checkpoint.pt
+Epoch 7/15 | Batch 0/2117 | Loss: 0.6025 | Acc: 79.69%
+Epoch 7/15 | Batch 250/2117 | Loss: 0.4284 | Acc: 78.59%
+Epoch 7/15 | Batch 500/2117 | Loss: 0.8030 | Acc: 78.46%
+Epoch 7/15 | Batch 750/2117 | Loss: 1.0320 | Acc: 78.54%
+Epoch 7/15 | Batch 1000/2117 | Loss: 0.8036 | Acc: 78.48%
+Epoch 7/15 | Batch 1250/2117 | Loss: 0.6378 | Acc: 78.63%
+Epoch 7/15 | Batch 1500/2117 | Loss: 0.4647 | Acc: 78.70%
+Epoch 7/15 | Batch 1750/2117 | Loss: 0.6086 | Acc: 78.73%
+Epoch 7/15 | Batch 2000/2117 | Loss: 0.6037 | Acc: 78.78%
+Epoch [7/15], Avg Loss: 0.7259, Avg Val Loss: 0.7290, Accuracy: 78.84%
+Checkpoint saved at trained_models/cnn_base_color_checkpoint.pt
+Epoch 8/15 | Batch 0/2117 | Loss: 0.4391 | Acc: 82.81%
+Epoch 8/15 | Batch 250/2117 | Loss: 0.7207 | Acc: 78.73%
+Epoch 8/15 | Batch 500/2117 | Loss: 0.6123 | Acc: 79.23%
+Epoch 8/15 | Batch 750/2117 | Loss: 0.7997 | Acc: 79.32%
+Epoch 8/15 | Batch 1000/2117 | Loss: 0.7372 | Acc: 79.54%
+Epoch 8/15 | Batch 1250/2117 | Loss: 0.7614 | Acc: 79.46%
+Epoch 8/15 | Batch 1500/2117 | Loss: 0.7239 | Acc: 79.45%
+Epoch 8/15 | Batch 1750/2117 | Loss: 0.9743 | Acc: 79.49%
+Epoch 8/15 | Batch 2000/2117 | Loss: 0.6738 | Acc: 79.51%
+Epoch [8/15], Avg Loss: 0.6918, Avg Val Loss: 0.6947, Accuracy: 79.54%
+Checkpoint saved at trained_models/cnn_base_color_checkpoint.pt
+Epoch 9/15 | Batch 0/2117 | Loss: 0.5907 | Acc: 81.25%
+Epoch 9/15 | Batch 250/2117 | Loss: 0.5834 | Acc: 80.28%
+Epoch 9/15 | Batch 500/2117 | Loss: 0.7075 | Acc: 80.49%
+Epoch 9/15 | Batch 750/2117 | Loss: 0.6500 | Acc: 80.41%
+Epoch 9/15 | Batch 1000/2117 | Loss: 0.6188 | Acc: 80.34%
+Epoch 9/15 | Batch 1250/2117 | Loss: 0.8321 | Acc: 80.27%
+Epoch 9/15 | Batch 1500/2117 | Loss: 0.5269 | Acc: 80.34%
+Epoch 9/15 | Batch 1750/2117 | Loss: 0.3527 | Acc: 80.32%
+Epoch 9/15 | Batch 2000/2117 | Loss: 0.5952 | Acc: 80.35%
+Epoch [9/15], Avg Loss: 0.6618, Avg Val Loss: 0.6770, Accuracy: 80.36%
+Checkpoint saved at trained_models/cnn_base_color_checkpoint.pt
+Epoch 10/15 | Batch 0/2117 | Loss: 0.8990 | Acc: 70.31%
+Epoch 10/15 | Batch 250/2117 | Loss: 1.0346 | Acc: 80.99%
+Epoch 10/15 | Batch 500/2117 | Loss: 0.5346 | Acc: 81.10%
+Epoch 10/15 | Batch 750/2117 | Loss: 0.8224 | Acc: 80.91%
+Epoch 10/15 | Batch 1000/2117 | Loss: 0.5870 | Acc: 80.84%
+Epoch 10/15 | Batch 1250/2117 | Loss: 0.5306 | Acc: 80.85%
+Epoch 10/15 | Batch 1500/2117 | Loss: 0.4321 | Acc: 80.95%
+Epoch 10/15 | Batch 1750/2117 | Loss: 0.6829 | Acc: 80.98%
+Epoch 10/15 | Batch 2000/2117 | Loss: 0.6086 | Acc: 80.99%
+Epoch [10/15], Avg Loss: 0.6372, Avg Val Loss: 0.6713, Accuracy: 81.04%
+Checkpoint saved at trained_models/cnn_base_color_checkpoint.pt
+Epoch 11/15 | Batch 0/2117 | Loss: 0.5146 | Acc: 79.69%
+Epoch 11/15 | Batch 250/2117 | Loss: 0.6066 | Acc: 82.20%
+Epoch 11/15 | Batch 500/2117 | Loss: 0.6059 | Acc: 81.83%
+Epoch 11/15 | Batch 750/2117 | Loss: 0.6107 | Acc: 81.80%
+Epoch 11/15 | Batch 1000/2117 | Loss: 0.5760 | Acc: 81.70%
+Epoch 11/15 | Batch 1250/2117 | Loss: 0.5373 | Acc: 81.67%
+Epoch 11/15 | Batch 1500/2117 | Loss: 0.6121 | Acc: 81.60%
+Epoch 11/15 | Batch 1750/2117 | Loss: 0.5493 | Acc: 81.68%
+Epoch 11/15 | Batch 2000/2117 | Loss: 0.6697 | Acc: 81.69%
+Epoch [11/15], Avg Loss: 0.6132, Avg Val Loss: 0.6581, Accuracy: 81.66%
+Checkpoint saved at trained_models/cnn_base_color_checkpoint.pt
+Epoch 12/15 | Batch 0/2117 | Loss: 0.5889 | Acc: 75.00%
+Epoch 12/15 | Batch 250/2117 | Loss: 0.4294 | Acc: 82.51%
+Epoch 12/15 | Batch 500/2117 | Loss: 0.3701 | Acc: 82.47%
+Epoch 12/15 | Batch 750/2117 | Loss: 0.4515 | Acc: 82.28%
+Epoch 12/15 | Batch 1000/2117 | Loss: 0.4972 | Acc: 82.29%
+Epoch 12/15 | Batch 1250/2117 | Loss: 0.7454 | Acc: 82.23%
+Epoch 12/15 | Batch 1500/2117 | Loss: 0.9679 | Acc: 82.10%
+Epoch 12/15 | Batch 1750/2117 | Loss: 0.6093 | Acc: 82.13%
+Epoch 12/15 | Batch 2000/2117 | Loss: 0.6149 | Acc: 82.14%
+Epoch [12/15], Avg Loss: 0.5929, Avg Val Loss: 0.6415, Accuracy: 82.16%
+Checkpoint saved at trained_models/cnn_base_color_checkpoint.pt
+Epoch 13/15 | Batch 0/2117 | Loss: 0.5316 | Acc: 84.38%
+Epoch 13/15 | Batch 250/2117 | Loss: 0.8167 | Acc: 82.64%
+Epoch 13/15 | Batch 500/2117 | Loss: 0.8408 | Acc: 82.52%
+Epoch 13/15 | Batch 750/2117 | Loss: 0.4714 | Acc: 82.55%
+Epoch 13/15 | Batch 1000/2117 | Loss: 0.7165 | Acc: 82.52%
+Epoch 13/15 | Batch 1250/2117 | Loss: 0.4829 | Acc: 82.54%
+Epoch 13/15 | Batch 1500/2117 | Loss: 0.4565 | Acc: 82.60%
+Epoch 13/15 | Batch 1750/2117 | Loss: 0.7195 | Acc: 82.57%
+Epoch 13/15 | Batch 2000/2117 | Loss: 0.4433 | Acc: 82.59%
+Epoch [13/15], Avg Loss: 0.5758, Avg Val Loss: 0.6298, Accuracy: 82.58%
+Checkpoint saved at trained_models/cnn_base_color_checkpoint.pt
+Epoch 14/15 | Batch 0/2117 | Loss: 0.8726 | Acc: 79.69%
+Epoch 14/15 | Batch 250/2117 | Loss: 0.5461 | Acc: 83.42%
+Epoch 14/15 | Batch 500/2117 | Loss: 0.4803 | Acc: 83.11%
+Epoch 14/15 | Batch 750/2117 | Loss: 0.5508 | Acc: 83.14%
+Epoch 14/15 | Batch 1000/2117 | Loss: 0.7840 | Acc: 83.17%
+Epoch 14/15 | Batch 1250/2117 | Loss: 0.5687 | Acc: 83.03%
+Epoch 14/15 | Batch 1500/2117 | Loss: 0.5335 | Acc: 82.96%
+Epoch 14/15 | Batch 1750/2117 | Loss: 0.3784 | Acc: 83.07%
+Epoch 14/15 | Batch 2000/2117 | Loss: 0.7655 | Acc: 83.09%
+Epoch [14/15], Avg Loss: 0.5591, Avg Val Loss: 0.6012, Accuracy: 83.07%
+Checkpoint saved at trained_models/cnn_base_color_checkpoint.pt
+Epoch 15/15 | Batch 0/2117 | Loss: 0.5400 | Acc: 82.81%
+Epoch 15/15 | Batch 250/2117 | Loss: 0.5186 | Acc: 83.12%
+Epoch 15/15 | Batch 500/2117 | Loss: 0.3096 | Acc: 83.56%
+Epoch 15/15 | Batch 750/2117 | Loss: 0.7218 | Acc: 83.59%
+Epoch 15/15 | Batch 1000/2117 | Loss: 0.4463 | Acc: 83.59%
+Epoch 15/15 | Batch 1250/2117 | Loss: 0.3816 | Acc: 83.57%
+Epoch 15/15 | Batch 1500/2117 | Loss: 0.6051 | Acc: 83.59%
+Epoch 15/15 | Batch 1750/2117 | Loss: 0.7317 | Acc: 83.53%
+Epoch 15/15 | Batch 2000/2117 | Loss: 0.4409 | Acc: 83.47%
+Epoch [15/15], Avg Loss: 0.5439, Avg Val Loss: 0.6055, Accuracy: 83.48%
+Checkpoint saved at trained_models/cnn_base_color_checkpoint.pt
+Training complete!
+Model saved to trained_models/cnn_base_color.pt
+Saved learning curve as learning_curves/cnn_base_color.png
+Checkpoint deleted after successful training.
+SBATCH_INFO: Running character recognition evaluation...
+========== EVALUATE.PY START ==========
+Model loaded successfully from 'trained_models/cnn_base_color.pt'
+Loading test dataset...
+Evaluating model...
+Batch 0 | Word Acc: 0.00% | Char Acc: 0.00%
+Batch 50 | Word Acc: 37.25% | Char Acc: 74.28%
+Batch 100 | Word Acc: 39.60% | Char Acc: 75.00%
+Batch 150 | Word Acc: 39.74% | Char Acc: 76.89%
+Batch 200 | Word Acc: 36.32% | Char Acc: 75.99%
+Batch 250 | Word Acc: 35.86% | Char Acc: 76.59%
+Batch 300 | Word Acc: 35.55% | Char Acc: 76.79%
+Batch 350 | Word Acc: 36.18% | Char Acc: 77.50%
+Batch 400 | Word Acc: 35.91% | Char Acc: 77.10%
+Batch 450 | Word Acc: 36.36% | Char Acc: 76.61%
+Batch 500 | Word Acc: 36.93% | Char Acc: 77.02%
+Batch 550 | Word Acc: 37.39% | Char Acc: 77.42%
+Batch 600 | Word Acc: 38.44% | Char Acc: 77.51%
+Batch 650 | Word Acc: 38.40% | Char Acc: 77.48%
+Batch 700 | Word Acc: 38.37% | Char Acc: 77.23%
+Batch 750 | Word Acc: 38.35% | Char Acc: 77.18%
+Batch 800 | Word Acc: 37.95% | Char Acc: 77.00%
+Batch 850 | Word Acc: 37.96% | Char Acc: 76.98%
+Batch 900 | Word Acc: 37.51% | Char Acc: 77.01%
+Batch 950 | Word Acc: 37.43% | Char Acc: 76.94%
+Batch 1000 | Word Acc: 37.86% | Char Acc: 77.08%
+Batch 1050 | Word Acc: 38.06% | Char Acc: 77.39%
+Batch 1100 | Word Acc: 38.33% | Char Acc: 77.52%
+Batch 1150 | Word Acc: 38.40% | Char Acc: 77.61%
+Batch 1200 | Word Acc: 38.30% | Char Acc: 77.65%
+Batch 1250 | Word Acc: 38.45% | Char Acc: 77.78%
+Batch 1300 | Word Acc: 38.43% | Char Acc: 77.55%
+Batch 1350 | Word Acc: 38.42% | Char Acc: 77.51%
+Batch 1400 | Word Acc: 38.62% | Char Acc: 77.68%
+Batch 1450 | Word Acc: 38.53% | Char Acc: 77.74%
+Batch 1500 | Word Acc: 38.57% | Char Acc: 77.55%
+Batch 1550 | Word Acc: 38.49% | Char Acc: 77.43%
+Batch 1600 | Word Acc: 38.73% | Char Acc: 77.52%
+Batch 1650 | Word Acc: 38.46% | Char Acc: 77.51%
+Batch 1700 | Word Acc: 38.15% | Char Acc: 77.43%
+Batch 1750 | Word Acc: 38.21% | Char Acc: 77.46%
+Batch 1800 | Word Acc: 37.87% | Char Acc: 77.41%
+Batch 1850 | Word Acc: 37.87% | Char Acc: 77.43%
+Batch 1900 | Word Acc: 37.87% | Char Acc: 77.57%
+Batch 1950 | Word Acc: 37.83% | Char Acc: 77.47%
+Word Accuracy: 37.90%
+Character Accuracy: 77.61%
+Character-level Macro Precision: 79.46%
+Character-level Macro Recall: 78.71%
+Character-level Macro F1 Score: 78.89%

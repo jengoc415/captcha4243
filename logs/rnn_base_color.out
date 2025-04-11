@@ -1,0 +1,136 @@
+SBATCH_INFO: Printing diagnostics (visible devices and nvidia-smi)...
+0
+Fri Apr 11 12:52:02 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 555.42.02              Driver Version: 555.42.02      CUDA Version: 12.5     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100 80GB PCIe          Off |   00000000:98:00.0 Off |                    0 |
+| N/A   56C    P0             78W /  300W |       1MiB /  81920MiB |      7%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+SBATCH_INFO: Running character recognition training...
+model         : rnn_base
+batch_size    : 64
+epochs        : 15
+learning_rate : 0.001
+val_split     : 0.2
+use_colour    : True
+image_size    : [200, 50]
+train_path    : dataset/train
+test_path     : dataset/test
+========== TRAIN.PY START ==========
+Using device: cuda
+Loading data loaders...
+Initializing rnn_base_color model...
+Begin training...
+Epoch 1/15 | Batch 0/101 | Loss: 26.1041
+Epoch [1/15], Avg Loss: 4.8416, Avg Val Loss: 3.9318
+Checkpoint saved at trained_models/rnn_base_color_checkpoint.pt
+Epoch 2/15 | Batch 0/101 | Loss: 3.9135
+Epoch [2/15], Avg Loss: 3.9298, Avg Val Loss: 3.9292
+Checkpoint saved at trained_models/rnn_base_color_checkpoint.pt
+Epoch 3/15 | Batch 0/101 | Loss: 3.9215
+Epoch [3/15], Avg Loss: 3.9315, Avg Val Loss: 3.9298
+Checkpoint saved at trained_models/rnn_base_color_checkpoint.pt
+Epoch 4/15 | Batch 0/101 | Loss: 3.9387
+Epoch [4/15], Avg Loss: 3.9315, Avg Val Loss: 3.9319
+Checkpoint saved at trained_models/rnn_base_color_checkpoint.pt
+Epoch 5/15 | Batch 0/101 | Loss: 3.9362
+Epoch [5/15], Avg Loss: 3.9308, Avg Val Loss: 3.9284
+Checkpoint saved at trained_models/rnn_base_color_checkpoint.pt
+Epoch 6/15 | Batch 0/101 | Loss: 3.9165
+Epoch [6/15], Avg Loss: 3.9260, Avg Val Loss: 3.9144
+Checkpoint saved at trained_models/rnn_base_color_checkpoint.pt
+Epoch 7/15 | Batch 0/101 | Loss: 3.9014
+Epoch [7/15], Avg Loss: 3.9149, Avg Val Loss: 3.9031
+Checkpoint saved at trained_models/rnn_base_color_checkpoint.pt
+Epoch 8/15 | Batch 0/101 | Loss: 3.9078
+Epoch [8/15], Avg Loss: 3.9066, Avg Val Loss: 3.9031
+Checkpoint saved at trained_models/rnn_base_color_checkpoint.pt
+Epoch 9/15 | Batch 0/101 | Loss: 3.8933
+Epoch [9/15], Avg Loss: 3.8905, Avg Val Loss: 3.8719
+Checkpoint saved at trained_models/rnn_base_color_checkpoint.pt
+Epoch 10/15 | Batch 0/101 | Loss: 3.8879
+Epoch [10/15], Avg Loss: 3.8596, Avg Val Loss: 3.8519
+Checkpoint saved at trained_models/rnn_base_color_checkpoint.pt
+Epoch 11/15 | Batch 0/101 | Loss: 3.8741
+Epoch [11/15], Avg Loss: 3.8069, Avg Val Loss: 3.7705
+Checkpoint saved at trained_models/rnn_base_color_checkpoint.pt
+Epoch 12/15 | Batch 0/101 | Loss: 3.7499
+Epoch [12/15], Avg Loss: 3.6860, Avg Val Loss: 3.5912
+Checkpoint saved at trained_models/rnn_base_color_checkpoint.pt
+Epoch 13/15 | Batch 0/101 | Loss: 3.5950
+Epoch [13/15], Avg Loss: 3.3798, Avg Val Loss: 3.0840
+Checkpoint saved at trained_models/rnn_base_color_checkpoint.pt
+Epoch 14/15 | Batch 0/101 | Loss: 3.1282
+Epoch [14/15], Avg Loss: 2.8170, Avg Val Loss: 2.6224
+Checkpoint saved at trained_models/rnn_base_color_checkpoint.pt
+Epoch 15/15 | Batch 0/101 | Loss: 2.5263
+Epoch [15/15], Avg Loss: 2.3974, Avg Val Loss: 2.2427
+Checkpoint saved at trained_models/rnn_base_color_checkpoint.pt
+Training complete!
+Model saved to trained_models/rnn_base_color.pt
+Saved learning curve as learning_curves/rnn_base_color.png
+Checkpoint deleted after successful training.
+SBATCH_INFO: Running character recognition evaluation...
+========== EVALUATE.PY START ==========
+Model loaded successfully from 'trained_models/rnn_base_color.pt'
+Loading test dataset...
+Evaluating model...
+Batch 0 | Word Acc: 0.00% | Char Acc: 0.00%
+Batch 50 | Word Acc: 5.88% | Char Acc: 37.62%
+Batch 100 | Word Acc: 4.95% | Char Acc: 36.45%
+Batch 150 | Word Acc: 3.97% | Char Acc: 34.89%
+Batch 200 | Word Acc: 3.98% | Char Acc: 34.60%
+Batch 250 | Word Acc: 3.19% | Char Acc: 35.32%
+Batch 300 | Word Acc: 3.99% | Char Acc: 36.25%
+Batch 350 | Word Acc: 3.42% | Char Acc: 35.73%
+Batch 400 | Word Acc: 3.24% | Char Acc: 34.56%
+Batch 450 | Word Acc: 3.33% | Char Acc: 34.97%
+Batch 500 | Word Acc: 3.19% | Char Acc: 35.09%
+Batch 550 | Word Acc: 3.09% | Char Acc: 35.56%
+Batch 600 | Word Acc: 3.33% | Char Acc: 35.74%
+Batch 650 | Word Acc: 3.23% | Char Acc: 34.99%
+Batch 700 | Word Acc: 3.00% | Char Acc: 34.75%
+Batch 750 | Word Acc: 2.80% | Char Acc: 34.40%
+Batch 800 | Word Acc: 2.62% | Char Acc: 34.00%
+Batch 850 | Word Acc: 2.59% | Char Acc: 33.75%
+Batch 900 | Word Acc: 2.66% | Char Acc: 33.57%
+Batch 950 | Word Acc: 2.52% | Char Acc: 33.64%
+Batch 1000 | Word Acc: 2.40% | Char Acc: 33.75%
+Batch 1050 | Word Acc: 2.85% | Char Acc: 33.98%
+Batch 1100 | Word Acc: 2.82% | Char Acc: 33.80%
+Batch 1150 | Word Acc: 2.69% | Char Acc: 33.92%
+Batch 1200 | Word Acc: 2.58% | Char Acc: 33.70%
+Batch 1250 | Word Acc: 2.56% | Char Acc: 33.78%
+Batch 1300 | Word Acc: 2.46% | Char Acc: 33.65%
+Batch 1350 | Word Acc: 2.52% | Char Acc: 33.54%
+Batch 1400 | Word Acc: 2.57% | Char Acc: 33.63%
+Batch 1450 | Word Acc: 2.48% | Char Acc: 33.73%
+Batch 1500 | Word Acc: 2.47% | Char Acc: 33.80%
+Batch 1550 | Word Acc: 2.51% | Char Acc: 33.72%
+Batch 1600 | Word Acc: 2.44% | Char Acc: 33.77%
+Batch 1650 | Word Acc: 2.36% | Char Acc: 33.75%
+Batch 1700 | Word Acc: 2.53% | Char Acc: 33.68%
+Batch 1750 | Word Acc: 2.51% | Char Acc: 33.86%
+Batch 1800 | Word Acc: 2.61% | Char Acc: 33.87%
+Batch 1850 | Word Acc: 2.59% | Char Acc: 33.83%
+Batch 1900 | Word Acc: 2.63% | Char Acc: 33.88%
+Batch 1950 | Word Acc: 2.56% | Char Acc: 33.90%
+Word Accuracy: 2.65%
+Character Accuracy: 34.04%
+Character-level Macro Precision: 37.91%
+Character-level Macro Recall: 36.97%
+Character-level Macro F1 Score: 35.75%

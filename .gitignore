@@ -56,7 +56,6 @@ augmented_data/
 rotated_data/
 
 # Ignore training logs or metrics
-logs/
 wandb/
 *.tensorboard
 
