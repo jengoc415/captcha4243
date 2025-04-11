@@ -198,9 +198,9 @@ def train(model_name):
     return model, (train_losses, val_losses, epochs)
 
 
-def save_learning_curve(loss_data, model_name):
-    train_losses, val_losses, epochs = loss_data
-
+def save_learning_curve(loss_data, model_name, plots_dir):
+    train_losses, val_losses, epochs = loss_data 
+    
     plt.figure()
     plt.plot(epochs, train_losses, label="Training Loss", marker='o', color='blue')
     if val_losses is not None:
@@ -211,9 +211,10 @@ def save_learning_curve(loss_data, model_name):
     plt.legend()
     plt.grid(True)
 
-    save_path = f"{model_name}.png"
+    # Save to the plots_dir directory
+    save_path = os.path.join(plots_dir, f"{model_name}.png")
     plt.savefig(save_path)
-    plt.close()
+    plt.close() 
     print(f"Saved learning curve as {save_path}")
 
 
@@ -242,4 +243,4 @@ if __name__ == "__main__":
         torch.save(model.state_dict(), model_path)
         print(f"Model saved to {model_path}")
 
-        save_learning_curve(loss_data, model_filename)
+        save_learning_curve(loss_data, model_filename, plots_dir)
