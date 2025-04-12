@@ -41,9 +41,9 @@ def load_checkpoint(model, optimizer, checkpoint_path, device):
     model.load_state_dict(checkpoint['model_state_dict'])
     optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
     start_epoch = checkpoint['epoch'] + 1
-    train_losses = checkpoint(['train_losses'])
-    val_losses = checkpoint(['val_losses'])
-    epochs = checkpoint(['epochs'])
+    train_losses = checkpoint['train_losses']
+    val_losses = checkpoint['val_losses']
+    epochs = checkpoint['epochs']
     
     print(f"Loaded checkpoint from {checkpoint_path}, resuming from epoch {start_epoch}")
     return start_epoch, train_losses, val_losses, epochs
@@ -197,6 +197,7 @@ def train():
 
                 optimizer.zero_grad()
                 loss.backward()
+                #nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
                 optimizer.step()
 
                 total_loss += loss.item()
