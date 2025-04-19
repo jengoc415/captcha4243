@@ -197,7 +197,7 @@ def train():
 
                 optimizer.zero_grad()
                 loss.backward()
-                #nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+                #nn.utils.clip_grad_norm_(model.parameters(), max_norm=0.5)     # Uncomment this for rnn_pretrained due to exploding gradient issue. Set the learning rate to 0.0001 for this as well
                 optimizer.step()
 
                 total_loss += loss.item()

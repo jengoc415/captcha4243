@@ -4,7 +4,7 @@ CONFIG = {
     "epochs": 15,
     "learning_rate": 0.001,
     "val_split": 0.2,
-    "use_colour": False, # set to true for RGB input
+    "use_colour": True, # set to true for RGB input
     "image_size": (28, 28),                   # Can be set to None if no resizing is wanted
     "train_path": "dataset/train_letter",
     "test_path": "dataset/test"

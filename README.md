@@ -35,8 +35,7 @@ captcha_project/
 ├── data_generation.py          # Generates char dataset by processing full CAPTCHAs images
 ├── evaluate.py                 # Evaluting models
 ├── requirements.txt            # Python dependencies
-├── train.py                    # Training loop for models
-└── visualise.py                # Visualise preprocessed characters
+└── train.py                    # Training loop for models
 ```
 
 ## 🧪 Requirements
